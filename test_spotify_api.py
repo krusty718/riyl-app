@@ -17,11 +17,12 @@ AUTH_URL = 'https://accounts.spotify.com/authorize' #Authorize Endpoint
 TOKEN_URL = 'https://accounts.spotify.com/api/token' #Token Endpoint, use POST
 API_BASE_URL = 'https://api.spotify.com/v1/'
 
-REC_ENDPOINT = 'https://api.spotify.com/v1/recommendations'
+REC_ENDPOINT = 'https://api.spotify.com/v1/recommendations?'
 ALBUM_ENDPOINT = 'https://api.spotify.com/v1/albums/'
 TRACKS_ENDPOINT = 'https://api.spotify.com/v1/tracks'
 
 def get_token():
+    #gets token using Spotify's Client Credentials Authorization Flow
     
     data = 'grant_type=client_credentials'
     headers = {
@@ -33,9 +34,6 @@ def get_token():
     #Using application/x-www-form-urlencoded parameters
     response = requests.post(TOKEN_URL, headers=headers, data=data)
     return response.json()['access_token']
-
-def check_rec():
-    ...
 
 def authorize():
 
@@ -52,31 +50,44 @@ def authorize():
     get_response = requests.get(AUTH_URL, params=params)
     print(get_response.url)
 
-def refresh_token():
-    ...
+def get_album(uri, headers):
+    return requests.get(ALBUM_ENDPOINT+uri, headers=headers)
+
+def main():
+
+    uri = '70Yl2w1p00whfnC7fj94ox' #using Neil Young's 'Everybody Knows This Is Nowhere" as an example
+    headers = {
+        "Authorization" : "Bearer " + get_token() #Authrozation header to pass in to various end points
+    }
+
+    #GET album object
+    r = get_album(uri,headers)
+    if r.status_code == 200:
+        query = r.iter_lines(decode_unicode=True) #prints out entire Response object in readable format (optional)
+        for _ in query:
+            ...
+            #print(_,end='\n')
+    else:
+        print("error")
+
+    tracklist = [] 
+    for _ in range(0,r.json()['tracks']['total']):
+        tracklist.append(r.json()['tracks']['items'][_]['id']) #creates a list of track IDs pulled from the album
+    
+    print(r.json()['artists'][0]['id']) #prints Spotify Artist ID of Album Object
+    params = f"limit={2}&seed_artists={r.json()['artists'][0]['id']}" #params to be passed into the Recommendation GET Request, limit to 10
+    rec = requests.get(REC_ENDPOINT,headers=headers, params=params)
+    
+    #prints the recommendations object in readable json (optional)
+    rec_query = rec.iter_lines(decode_unicode=True)
+    for _ in rec_query:
+        print(_,end='\n')
 
 def b64_encode(s):
     return base64.b64encode(s.encode()).decode()
 ''
 def decode(s):
     return base64.b64decode(s).decode()
-
-def main():
-    uri = '70Yl2w1p00whfnC7fj94ox'
-    headers = {
-        "Authorization" : "Bearer " + get_token()
-    }
-    #GET album object
-    r = requests.get(ALBUM_ENDPOINT+uri, headers=headers)
-    if r.status_code == 200:
-        query = r.iter_lines(decode_unicode=True)
-        for _ in query:
-            print(_,end='\n')
-    else:
-        print("error")
-
-
-
 
 if __name__ == "__main__":
     main()
