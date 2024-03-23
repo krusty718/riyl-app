@@ -53,6 +53,11 @@ def authorize():
 def get_album(uri, headers):
     return requests.get(ALBUM_ENDPOINT+uri, headers=headers)
 
+def response_debug(r):
+    query = r.iter_lines(decode_unicode=True) #prints out entire Response object in readable format (optional)
+    for _ in query:
+        print(_,end='\n')
+
 def main():
 
     uri = '70Yl2w1p00whfnC7fj94ox' #using Neil Young's 'Everybody Knows This Is Nowhere" as an example
@@ -60,28 +65,19 @@ def main():
         "Authorization" : "Bearer " + get_token() #Authrozation header to pass in to various end points
     }
 
-    #GET album object
+    #GET album object, for now assuming  response status_code is 200
     r = get_album(uri,headers)
-    if r.status_code == 200:
-        query = r.iter_lines(decode_unicode=True) #prints out entire Response object in readable format (optional)
-        for _ in query:
-            ...
-            #print(_,end='\n')
-    else:
-        print("error")
 
     tracklist = [] 
     for _ in range(0,r.json()['tracks']['total']):
         tracklist.append(r.json()['tracks']['items'][_]['id']) #creates a list of track IDs pulled from the album
     
     print(r.json()['artists'][0]['id']) #prints Spotify Artist ID of Album Object
-    params = f"limit={2}&seed_artists={r.json()['artists'][0]['id']}" #params to be passed into the Recommendation GET Request, limit to 10
-    rec = requests.get(REC_ENDPOINT,headers=headers, params=params)
     
-    #prints the recommendations object in readable json (optional)
-    rec_query = rec.iter_lines(decode_unicode=True)
-    for _ in rec_query:
-        print(_,end='\n')
+    params = f"limit={1}&seed_artists={r.json()['artists'][0]['id']}" #params to be passed into the Recommendation GET Request, limit to 10 recommendations
+    
+    rec = requests.get(REC_ENDPOINT,headers=headers, params=params)
+    response_debug(rec)
 
 def b64_encode(s):
     return base64.b64encode(s.encode()).decode()
