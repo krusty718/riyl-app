@@ -2,6 +2,8 @@ import requests
 import base64
 import random
 import string
+import urllib.parse
+from get_token import get_token
 
 #Using Spotify's Client Credentials Authorization Flow
 
@@ -17,27 +19,13 @@ REC_ENDPOINT = 'https://api.spotify.com/v1/recommendations?'
 ALBUM_ENDPOINT = 'https://api.spotify.com/v1/albums/'
 TRACKS_ENDPOINT = 'https://api.spotify.com/v1/tracks/'
 AUDIO_FEATS_ENDPOINT = 'https://api.spotify.com/v1/audio-features/'
-
+SEARCH_ENDPOINT = 'https://api.spotify.com/v1/search?'
 
 def b64_encode(s):
     return base64.b64encode(s.encode()).decode()
 
 def decode(s):
     return base64.b64decode(s).decode()
-
-def get_token():
-    #gets token using Spotify's Client Credentials Authorization Flow
-    
-    data = 'grant_type=client_credentials'
-    headers = {
-        'Authorization' : 'Basic ' + b64_encode(CLIENT_ID + ':' + CLIENT_SECRET),
-        'Content-Type' : 'application/x-www-form-urlencoded'
-    }
-
-    #POST to the TOKEN_URL
-    #Using application/x-www-form-urlencoded parameters
-    response = requests.post(TOKEN_URL, headers=headers, data=data)
-    return response.json()['access_token']
 
 def authorize():
     #TODO remove or change authorization flow, right now it's Client Credentials and there's no need for a user to give authorization
@@ -73,15 +61,27 @@ def response_debug(r):
 
 def search():
     #TODO create a simple search function, maybe one that takes only an album, artist or track?
-    ...
+    #likely returns the album URI?
+
+    headers = {
+        "Authorization" : "Bearer " + get_token().json()['access_token'] #Authorization header to pass in to various end points
+    }
+
+    query = "Zuma"
+    s_query = urllib.parse.quote_plus(f'q={query}&type=album&limit=5', safe="=&")
+    r = requests.get(url=f'{SEARCH_ENDPOINT}{s_query}', headers=headers)
+    return r
 
 def main():
     #TODO "uri" variable eventually something the get_album function returns so this isn't in main
     uri = '70Yl2w1p00whfnC7fj94ox' #using Neil Young's 'Everybody Knows This Is Nowhere" as an example
     
     headers = {
-        "Authorization" : "Bearer " + get_token() #Authorization header to pass in to various end points
+        "Authorization" : "Bearer " + get_token().json()['access_token'] #Authorization header to pass in to various end points
     }
+
+    s = search()
+    response_debug(s)
 
     #GET album object, for now assuming  response status_code is 200
     #TODO only headers would be passed in here, uri is captured inside the function
@@ -89,12 +89,10 @@ def main():
 
     #TODO possibly create a get_tracklist function?
     tracklist = [r.json()['tracks']['items'][_]['id'] for _ in range(0,r.json()['tracks']['total'])] #list of tracks IDs from album
-    print(tracklist)
     #TODO possibly create a get artist_id function?
     artist_id = r.json()['artists'][0]['id']
-    print(artist_id)
 
-    #TODO this maybe goes into a function that can return two track IDs from the album, the one with the lowest popularity socre and the highest
+    #TODO this maybe goes into a function that can return two track IDs from the album, the one with the lowest popularity score and the highest
     for _ in tracklist:
        t = requests.get(TRACKS_ENDPOINT+_,headers=headers)
        #print(t.json()['popularity']) #prints popularity of each track on the album
