@@ -1,4 +1,3 @@
-import pytest
 from test_spotify_api import search
 from get_token import get_token
 
