@@ -59,16 +59,16 @@ def response_debug(r):
     for _ in query:
         print(_,end='\n')
 
-def search():
+def search(query):
     #TODO create a simple search function, maybe one that takes only an album, artist or track?
     #likely returns the album URI?
 
     headers = {
         "Authorization" : "Bearer " + get_token().json()['access_token'] #Authorization header to pass in to various end points
     }
-
-    query = "Zuma"
-    s_query = urllib.parse.quote_plus(f'q={query}&type=album&limit=5', safe="=&")
+    
+    limit = 5
+    s_query = urllib.parse.quote_plus(f'q={query}&type=album&limit={limit}', safe="=&")
     r = requests.get(url=f'{SEARCH_ENDPOINT}{s_query}', headers=headers)
     return r
 
@@ -79,8 +79,7 @@ def main():
     headers = {
         "Authorization" : "Bearer " + get_token().json()['access_token'] #Authorization header to pass in to various end points
     }
-
-    s = search()
+    s = search(input("Album name: "))
     response_debug(s)
 
     #GET album object, for now assuming  response status_code is 200
