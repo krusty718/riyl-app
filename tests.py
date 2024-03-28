@@ -19,7 +19,7 @@ def test_search_status_code():
     assert search(SEARCH_QUERY).status_code == 200
 
 def test_search_album_name():
-    #tests proper return of 
     assert search(SEARCH_QUERY).json()['albums']['items'][0]['external_urls']['spotify'] == 'https://open.spotify.com/album/70Yl2w1p00whfnC7fj94ox'
     assert search(SEARCH_QUERY).json()['albums']['items'][0]['name'] == "Everybody Knows This Is Nowhere"
     assert search(SEARCH_QUERY).json()['albums']['items'][0]['artists'][0]['name'] == "Neil Young"
+    assert search(SEARCH_QUERY).json()['albums']['limit'] == 5

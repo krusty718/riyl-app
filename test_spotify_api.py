@@ -80,7 +80,12 @@ def main():
         "Authorization" : "Bearer " + get_token().json()['access_token'] #Authorization header to pass in to various end points
     }
     s = search(input("Album name: "))
-    response_debug(s)
+
+    albums = s.json()['albums']['items']
+    for a in albums:
+        for b in range(0,len(a['artists'])):
+            print(f"{a['artists'][b]['name']},",end="")
+        print(f" - {a['name']}")
 
     #GET album object, for now assuming  response status_code is 200
     #TODO only headers would be passed in here, uri is captured inside the function
