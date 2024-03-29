@@ -7,16 +7,14 @@ from get_token import get_token
 
 #Using Spotify's Client Credentials Authorization Flow
 
-CLIENT_ID = '5e3b178d331d4a239bd30375ad348520'
-CLIENT_SECRET = 'ab3dadd7968f4e6a823c2a7059da47c5'
 REDIRECT_URI = 'http://localhost:5000/callback' 
 
 AUTH_URL = 'https://accounts.spotify.com/authorize' #Authorize Endpoint
-TOKEN_URL = 'https://accounts.spotify.com/api/token' #Token Endpoint, use POST
 API_BASE_URL = 'https://api.spotify.com/v1/'
 
 REC_ENDPOINT = 'https://api.spotify.com/v1/recommendations?'
 ALBUM_ENDPOINT = 'https://api.spotify.com/v1/albums/'
+ARTIST_ENDPOINT = 'https://api.spotify.com/v1/artists/'
 TRACKS_ENDPOINT = 'https://api.spotify.com/v1/tracks/'
 AUDIO_FEATS_ENDPOINT = 'https://api.spotify.com/v1/audio-features/'
 SEARCH_ENDPOINT = 'https://api.spotify.com/v1/search?'
@@ -30,27 +28,11 @@ def b64_encode(s):
 def decode(s):
     return base64.b64decode(s).decode()
 
-def authorize():
-    #TODO remove or change authorization flow, right now it's Client Credentials and there's no need for a user to give authorization
-    #GET to the AUTH_URL
-    params = {
-        'client_id' : CLIENT_ID,
-        'response_type': 'code',
-        'redirect_uri' : REDIRECT_URI,
-        'state' : ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(16)),
-        'show_dialog' : False
-    }
+def get_album(album_id, headers):
+    return requests.get(ALBUM_ENDPOINT+album_id, headers=headers)
 
-    #gets authorization code for token
-    get_response = requests.get(AUTH_URL, params=params)
-    print(get_response.url)
-
-def get_album(uri, headers):
-    #TODO add album input or search feature
-    return requests.get(ALBUM_ENDPOINT+uri, headers=headers)
-
-def get_artist():
-    ...
+def get_artist(artist_id, headers):
+    return requests.get(ARTIST_ENDPOINT+artist_id, headers=headers)
 
 def get_track():
     #TODO function gets track using TRACKS_ENDPOINT, instead of putting this in main
