@@ -86,21 +86,20 @@ def rec_albums():
 #################
 
 def main():
-    #TODO "uri" variable eventually something the get_album function returns so this isn't in main
-    uri = '70Yl2w1p00whfnC7fj94ox' #using Neil Young's 'Everybody Knows This Is Nowhere" as an example
     
+    #HEADERS
     headers = {
         "Authorization" : "Bearer " + get_token().json()['access_token'] #Authorization header to pass in to various end points
     }
     
     try:
-        s = search(input("Album name: "))
+        s = search(input("Album name: ")) #Accept an album title, can also accept artist and album title or whatever Spotify's Search API can accept
 
-        searched_albums = s.json()['albums']['items']
-        searched_album_ids = [a['id'] for a in s.json()['albums']['items']]
+        searched_albums = s.json()['albums']['items'] #list of albums as list of dicts
+        searched_album_ids = [a['id'] for a in s.json()['albums']['items']] #list of album ids as list of strings
 
         index = 1
-        for a in searched_albums:
+        for a in searched_albums: #loop through dicts of albums, search() limits to 10 searches currently, print Artist(s) - Album
             print(f"{index}. ", end="")
             for b in range(0,len(a['artists'])):
                 if len(a['artists']) > 1:
@@ -110,23 +109,28 @@ def main():
             print(f" - {a['name']}")
             index += 1
         try:
-            r = get_album(searched_album_ids[int(input("Please choose an album from 1 to 10")) - 1],headers)
+            r = get_album(searched_album_ids[int(input("Please choose an album from 1 to 10: ")) - 1],headers)
             #TODO possibly create a get_tracklist function?
             tracklist = [r.json()['tracks']['items'][_]['id'] for _ in range(0,r.json()['tracks']['total'])] #list of tracks IDs from album
             #TODO possibly create a get artist_id function?
             artist_id = r.json()['artists'][0]['id']
             
+            limit = 5
             #seed_tracks are limited to two, should be least popular and most popular, need function to set the two and add in params
-            params = f"limit={1}&seed_artists={artist_id}&seed_tracks={tracklist[0]}" #params to be passed into the Recommendation GET Request, limit to 10 recommendations
-    
+            params = f"limit={limit}&seed_artists={artist_id}&seed_tracks={tracklist[0]}" #params to be passed into the Recommendation GET Request, limit to 10 recommendations
 
             #TODO mechanism for how/what we want to seed to the recommendation engine to provide us 10 album recs
             #artist, least popular track on album, most popular track on album, and audio features, e.g., 'min_valence, max_valence', and so on?
+            
             rec = requests.get(REC_ENDPOINT,headers=headers, params=params)
-            print(rec.json()['tracks'][0]['album']['external_urls']['spotify'])
+            print(f'\nRecommending based on \n\n')
+            for i in range(0,limit):
+                for _ in range(0,len(rec.json()['tracks'][i]['artists'])):
+                    print(rec.json()['tracks'][i]['artists'][_]['name'], end=" - ") #prints artist(s)
+                print(f"\'{rec.json()['tracks'][i]['album']['name']}\'")
+                print(rec.json()['tracks'][i]['album']['external_urls']['spotify'])
         except KeyError:
             pass
-
     except ValueError:
         pass
 
