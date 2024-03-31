@@ -1,9 +1,8 @@
 import requests
 import base64
-import random
-import string
 import urllib.parse
 from get_token import get_token
+from ascii_logo import main as ascii_img
 
 #Using Spotify's Client Credentials Authorization Flow
 
@@ -48,8 +47,7 @@ def response_debug(r):
         print(_,end='\n')
 
 def search(query):
-    #TODO create a simple search function, maybe one that takes only an album, artist or track?
-    #likely returns the album URI?
+    #TODO update search to accept URI and album ID, using regex or something that Spotiy's API offers?
 
     headers = {
         "Authorization" : "Bearer " + get_token().json()['access_token'] #Authorization header to pass in to various end points
@@ -68,14 +66,14 @@ def rec_albums():
 #################
 
 def main():
-    
+
     #HEADERS
     headers = {
         "Authorization" : "Bearer " + get_token().json()['access_token'] #Authorization header to pass in to various end points
     }
     
     try:
-        s = search(input("Album name: ")) #Accept an album title, can also accept artist and album title or whatever Spotify's Search API can accept
+        s = search(input("Enter an album name: ")) #Accept an album title, can also accept artist and album title or whatever Spotify's Search API can accept
 
         searched_albums = s.json()['albums']['items'] #list of albums as list of dicts
         searched_album_ids = [a['id'] for a in s.json()['albums']['items']] #list of album ids as list of strings
@@ -91,7 +89,7 @@ def main():
             print(f" - {a['name']}")
             index += 1
         try:
-            r = get_album(searched_album_ids[int(input("Please choose an album from 1 to 10: ")) - 1],headers)
+            r = get_album(searched_album_ids[int(input("\nPlease choose an album from 1 to 10: ")) - 1],headers)
             #TODO possibly create a get_tracklist function?
             tracklist = [r.json()['tracks']['items'][_]['id'] for _ in range(0,r.json()['tracks']['total'])] #list of tracks IDs from album
             #TODO possibly create a get artist_id function?
@@ -105,7 +103,7 @@ def main():
             #artist, least popular track on album, most popular track on album, and audio features, e.g., 'min_valence, max_valence', and so on?
             
             rec = requests.get(REC_ENDPOINT,headers=headers, params=params)
-            print(f'\nRecommending based on \n\n')
+            print(f"\nRecommending based on {r.json()['artists'][0]['name']} - {r.json()['name']}\n\n")
             for i in range(0,limit):
                 for _ in range(0,len(rec.json()['tracks'][i]['artists'])):
                     print(rec.json()['tracks'][i]['artists'][_]['name'], end=" - ") #prints artist(s)
@@ -129,4 +127,5 @@ def main():
     audio = requests.get(AUDIO_FEATS_ENDPOINT+tracklist[0],headers=headers)
 
 if __name__ == "__main__":
+    ascii_img()
     main()
