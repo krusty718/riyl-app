@@ -3,7 +3,6 @@ import base64
 import urllib.parse
 from get_token import get_token
 from ascii_logo import main as ascii_img
-from spotify_classes import Album
 
 #Using Spotify's Client Credentials Authorization Flow
 

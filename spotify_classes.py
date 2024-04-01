@@ -41,7 +41,6 @@ class Album:
     def artist_ids(self,artist_ids):
         self._artist_ids = artist_ids
     
-
     def get_album(id,headers):
         r = requests.get(ALBUM_ENDPOINT+id, headers=headers)
 
