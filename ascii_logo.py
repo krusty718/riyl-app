@@ -17,7 +17,7 @@ def pixel_to_ascii(image):
 
 
 def main():
-    image = PIL.Image.open('/Users/izinger/Desktop/dev/CS50 Final Project/riyl-app/logo.png')
+    image = PIL.Image.open('logo.png')
 
     image = resize_image(image)
     grayscale_image = to_grayscale(image)
