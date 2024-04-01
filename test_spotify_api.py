@@ -3,6 +3,7 @@ import base64
 import urllib.parse
 from get_token import get_token
 from ascii_logo import main as ascii_img
+from spotify_classes import Album
 
 #Using Spotify's Client Credentials Authorization Flow
 
@@ -46,12 +47,8 @@ def response_debug(r):
     for _ in query:
         print(_,end='\n')
 
-def search(query):
+def search(query,headers):
     #TODO update search to accept URI and album ID, using regex or something that Spotiy's API offers?
-
-    headers = {
-        "Authorization" : "Bearer " + get_token().json()['access_token'] #Authorization header to pass in to various end points
-    }
 
     limit = 10
     s_query = urllib.parse.quote_plus(f'q={query}&type=album&limit={limit}', safe="=&")
@@ -73,7 +70,7 @@ def main():
     }
     
     try:
-        s = search(input("Enter an album name: ")) #Accept an album title, can also accept artist and album title or whatever Spotify's Search API can accept
+        s = search(input("Enter an album name: "),headers=headers) #Accept an album title, can also accept artist and album title or whatever Spotify's Search API can accept
 
         searched_albums = s.json()['albums']['items'] #list of albums as list of dicts
         searched_album_ids = [a['id'] for a in s.json()['albums']['items']] #list of album ids as list of strings
