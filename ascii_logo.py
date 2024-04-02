@@ -30,6 +30,7 @@ def main():
         ascii_img += ascii_str[i:i+img_width] + "\n"
     
     print(ascii_img)
+    print(f'\t\t\tRIYL-App\n\t\t\tIlya Zinger, 2024\n\n')
 
 if __name__ == "__main__":
     main()

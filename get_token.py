@@ -2,7 +2,7 @@ import requests
 import base64
 
 CLIENT_ID = '5e3b178d331d4a239bd30375ad348520'
-CLIENT_SECRET = 'ab3dadd7968f4e6a823c2a7059da47c5'
+CLIENT_SECRET = '0de76337c412408abb01e30df40afe0b'
 TOKEN_URL = 'https://accounts.spotify.com/api/token'
 
 def b64_encode(s):

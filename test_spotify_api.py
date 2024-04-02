@@ -1,6 +1,7 @@
 import requests
 import base64
 import urllib.parse
+import os
 from get_token import get_token
 from ascii_logo import main as ascii_img
 
@@ -71,6 +72,9 @@ def main():
     try:
         s = search(input("Enter an album name: "),headers=headers) #Accept an album title, can also accept artist and album title or whatever Spotify's Search API can accept
 
+        os.system("clear")
+        ascii_img()
+        
         searched_albums = s.json()['albums']['items'] #list of albums as list of dicts
         searched_album_ids = [a['id'] for a in s.json()['albums']['items']] #list of album ids as list of strings
 
@@ -98,6 +102,9 @@ def main():
             #TODO mechanism for how/what we want to seed to the recommendation engine to provide us 10 album recs
             #artist, least popular track on album, most popular track on album, and audio features, e.g., 'min_valence, max_valence', and so on?
             
+            os.system("clear")
+            ascii_img()
+
             rec = requests.get(REC_ENDPOINT,headers=headers, params=params)
             print(f"\nRecommending based on {r.json()['artists'][0]['name']} - {r.json()['name']}\n\n")
             for i in range(0,limit):
@@ -123,5 +130,6 @@ def main():
     audio = requests.get(AUDIO_FEATS_ENDPOINT+tracklist[0],headers=headers)
 
 if __name__ == "__main__":
+    os.system("clear")
     ascii_img()
     main()
