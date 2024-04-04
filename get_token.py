@@ -1,8 +1,7 @@
 import requests
 import base64
+import json
 
-CLIENT_ID = '5e3b178d331d4a239bd30375ad348520'
-CLIENT_SECRET = '0de76337c412408abb01e30df40afe0b'
 TOKEN_URL = 'https://accounts.spotify.com/api/token'
 
 def b64_encode(s):
@@ -13,6 +12,12 @@ def decode(s):
 
 #gets token using Spotify's Client Credentials Authorization Flow
 def get_token():
+
+    with open("config.cfg", "r") as f:
+        parsed_json = json.load(f)
+
+    CLIENT_ID = parsed_json['CLIENT_ID']
+    CLIENT_SECRET = parsed_json['CLIENT_SECRET']
 
     data = 'grant_type=client_credentials'
     headers = {

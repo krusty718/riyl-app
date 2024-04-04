@@ -4,7 +4,7 @@ from get_token import get_token
 ALBUM_ENDPOINT = 'https://api.spotify.com/v1/albums/'
 
 class Album:
-    def __init__(self, name, artists, tracklist,artist_ids):
+    def __init__(self, name, artists, tracklist, artist_ids):
         self.name = name
         self.artists = artists
         self.tracklist = tracklist
@@ -56,16 +56,7 @@ class Album:
 
         return Album(name,artists,tracklist,artist_ids)
 
-def main():
-    id = '70Yl2w1p00whfnC7fj94ox'
-
-    headers = {
-        "Authorization" : "Bearer " + get_token().json()['access_token'] #Authorization header to pass in to various end points
-    }
-
-    album = Album.get_album(id,headers=headers)
-    print(album)
-
-main()
+class Search(Album):
+    ...
         
 

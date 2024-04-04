@@ -4,6 +4,7 @@ import urllib.parse
 import os
 from get_token import get_token
 from ascii_logo import main as ascii_img
+from spotify import Album
 
 #Using Spotify's Client Credentials Authorization Flow
 
@@ -74,7 +75,7 @@ def main():
 
         os.system("clear")
         ascii_img()
-        
+
         searched_albums = s.json()['albums']['items'] #list of albums as list of dicts
         searched_album_ids = [a['id'] for a in s.json()['albums']['items']] #list of album ids as list of strings
 
