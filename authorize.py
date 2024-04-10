@@ -17,7 +17,6 @@ def authorize():
     hashed_code.update(b'{code_verifier}') #code challenge using SHA256 algorithm
     code_challenge = base64.b64encode(hashed_code.digest()) #code challenge encoded to base64
 
-   #GET to the AUTH_URL
     params = {
         'client_id' : CLIENT_ID,
         'response_type': 'code',
@@ -29,9 +28,9 @@ def authorize():
     }
 
     #gets authorization code for token
-    get_response = requests.get(AUTH_URL, params=params)
+    uri = requests.get(AUTH_URL, params=params).url
     
-    print(get_response.url)
+    print(uri)                      
     # NEED TO CAPTURE REDIRECTED URL THAT INCLUDES 'CODE' and 'STATE
     # CODE BELOW WORKS ONCE URL CAN BE CAPTURED (Listen in on port, create web server?)
 

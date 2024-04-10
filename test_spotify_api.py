@@ -5,6 +5,7 @@ import os
 from get_token import get_token
 from ascii_logo import main as ascii_img
 from spotify import Album
+import argparse
 
 #Using Spotify's Client Credentials Authorization Flow
 
@@ -65,9 +66,14 @@ def rec_albums():
 
 def main():
 
+    parse = argparse.ArgumentParser()
+    parse.add_argument("-c", help="-c [CLIENT_SECRET]")
+    arg = parse.parse_args()
+    secret = arg.c
+    
     #HEADERS
     headers = {
-        "Authorization" : "Bearer " + get_token().json()['access_token'] #Authorization header to pass in to various end points
+        "Authorization" : "Bearer " + get_token(secret).json()['access_token'] #Authorization header to pass in to various end points
     }
     
     try:
