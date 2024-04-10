@@ -12,8 +12,12 @@
 
 
 
-# get_token()
+# get_token(secret)
+#### get_token accepts a Client Secret as provided by Spotify's Web API [URL](https://developer.spotify.com/dashboard/5e3b178d331d4a239bd30375ad348520/settings)
+#### Assuming access is available, test_spotify_api.py accepts the paramter -c, followed by the Client Secret
 
+    python test_spotify_api.py -c [CLIENT SECRET]
+    
 #### get_token is a module outside of the main project that simply requests the Bearer Token from Spotify API's Token Endpoint.  It assumes the simple Client Credentials flow and doesn't require the user to authorize via Spotify's Authorization flows.  get_token returns a JSON response, example below:
 
 	from get_token import get_token
