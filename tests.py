@@ -1,5 +1,4 @@
-import pytest
-from test_spotify_api import search, get_album, get_artist
+from riyl import search, get_album, get_artist
 from get_token import get_token
 
 SEARCH_QUERY = "Everybody Knows This Is Nowhere"

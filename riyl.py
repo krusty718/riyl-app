@@ -4,7 +4,7 @@ import urllib.parse
 import os
 from get_token import get_token
 from ascii_logo import main as ascii_img
-from spotify import Album
+from wip.spotify import Album
 import argparse
 
 #Using Spotify's Client Credentials Authorization Flow
