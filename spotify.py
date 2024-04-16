@@ -56,14 +56,9 @@ class Album:
         r = requests.get(ALBUM_ENDPOINT+id, headers=headers)
 
         name = r.json()['name']
-        artists = []
-        for _ in range(0,len(r.json()['artists'])):
-            if len(r.json()['artists']) > 1:
-                artists.append(r.json()['artists'][_]['name'])
-            else:
-                artists.append(r.json()['artists'][_]['name'])
-        tracklist = [r.json()['tracks']['items'][_]['name'] for _ in range(0,r.json()['tracks']['total'])]
-        artist_ids = [r.json()['artists'][_]['id'] for _ in range(0,len(r.json()['artists']))]
+        artists = [_['name'] for _ in r.json()['artists']]
+        tracklist = [_['name'] for _ in r.json()['tracks']['items']]
+        artist_ids = [_['id'] for _ in r.json()['artists']]        
         album_id = r.json()['id']
 
         return Album(name,artists,tracklist,artist_ids,album_id)
@@ -80,7 +75,8 @@ class Album:
 
 
 def main():
-    id = '2CNEkSE8TADXRT2AzcEt1b'
+    boys = '2CNEkSE8TADXRT2AzcEt1b'
+    neil = '70Yl2w1p00whfnC7fj94ox'
 
     parse = argparse.ArgumentParser()
     parse.add_argument("-c", help="-c [CLIENT_SECRET]")
@@ -92,12 +88,10 @@ def main():
         "Authorization" : "Bearer " + get_token.get_token(secret) #Authorization header to pass in to various end points
     }
 
-    album = Album.get_album(id, headers)
+    album = Album.get_album(neil, headers)
     search = Album.search_album(album.name,headers)
-    index = 1
     for _ in search:
         print(_)
-        index += 1
 
 
 if __name__ == "__main__":

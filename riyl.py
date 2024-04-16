@@ -82,21 +82,6 @@ def main():
         os.system("clear")
         ascii_img()
 
-        #searched_albums = s.json()['albums']['items'] #list of albums as list of dicts
-        #searched_album_ids = [a['id'] for a in s.json()['albums']['items']] #list of album ids as list of strings
-
-        """
-        index = 1
-        for a in searched_albums: #loop through dicts of albums, search() limits to 10 searches currently, print Artist(s) - Album
-            print(f"{index}. ", end="")
-            for b in range(0,len(a['artists'])):
-                if len(a['artists']) > 1:
-                    print(f"{a['artists'][b]['name']}",end=" # ")
-                else:
-                    print(f"{a['artists'][b]['name']}",end="")
-            print(f" - {a['name']}")
-            index += 1
-        """
         index = 1
         for a in s:
             print(f"{index}. {a.artists} - {a.name}")
@@ -105,13 +90,6 @@ def main():
         """
         try:
             r = spotify.Album.get_album(s[int(input("\nPlease choose an album from 1 to 10: ")) - 1].album_id,headers)
-            
-            
-            #TODO possibly create a get_tracklist function?
-            tracklist = [r.json()['tracks']['items'][_]['id'] for _ in range(0,r.json()['tracks']['total'])] #list of tracks IDs from album
-            #TODO possibly create a get artist_id function?
-            artist_id = r.json()['artists'][0]['id']
-            
 
             limit = 5
             #seed_tracks are limited to two, should be least popular and most popular, need function to set the two and add in params
