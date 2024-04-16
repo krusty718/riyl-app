@@ -1,4 +1,5 @@
 import requests
+import argparse
 from get_token import get_token
 
 ALBUM_ENDPOINT = 'https://api.spotify.com/v1/albums/'
@@ -44,7 +45,7 @@ class Album:
     def get_album(id,headers):
         r = requests.get(ALBUM_ENDPOINT+id, headers=headers)
 
-        name = r. json()['name']
+        name = r.json()['name']
         artists = []
         for _ in range(0,len(r.json()['artists'])):
             if len(r.json()['artists']) > 1:
@@ -58,5 +59,26 @@ class Album:
 
 class Search(Album):
     ...
+
+def main():
+    id = '70Yl2w1p00whfnC7fj94ox'
+
+    parse = argparse.ArgumentParser()
+    parse.add_argument("-c", help="-c [CLIENT_SECRET]")
+    arg = parse.parse_args()
+    secret = arg.c
+    
+    #HEADERS
+    headers = {
+        "Authorization" : "Bearer " + get_token.get_token(secret) #Authorization header to pass in to various end points
+    }
+
+    album = Album.get_album(id, headers)
+    print(album)
+
+
+if __name__ == "__main__":
+    main()
+
         
 

@@ -1,12 +1,17 @@
 from riyl import search, get_album, get_artist
-from get_token import get_token
+from get_token.get_token import get_token
+import spotify
 
 SEARCH_QUERY = "Everybody Knows This Is Nowhere"
 ARTIST_ID = '6v8FB84lnmJs434UJf2Mrm'
 ALBUM_ID = '70Yl2w1p00whfnC7fj94ox'
+SECRET = '5f68187d64544be18313f22a19287b25'
+
 HEADERS = {
-    "Authorization" : "Bearer " + get_token().json()['access_token']
+    "Authorization" : "Bearer " + get_token(SECRET)
     }
+
+album = spotify.Album.get_album(ALBUM_ID, HEADERS)
 
 def test_get_token():
     assert get_token() is not None
@@ -15,7 +20,7 @@ def test_get_token_status_code():
     assert get_token().status_code == 200
 
 def test_get_token_access_token():
-    assert get_token().json()['access_token'] is not None
+    assert get_token() is not None
 
 def test_search():
     assert search(SEARCH_QUERY,HEADERS) is not None
@@ -36,3 +41,6 @@ def test_get_album():
 def test_get_artist():
     assert get_artist(ARTIST_ID,HEADERS).status_code == 200
     assert get_artist(ARTIST_ID,HEADERS).json()['name'] == "Neil Young"
+
+def test_rec():
+    assert 

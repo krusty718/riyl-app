@@ -2,9 +2,9 @@ import requests
 import base64
 import urllib.parse
 import os
-from get_token import get_token
+from get_token.get_token import get_token
 from ascii_logo import main as ascii_img
-from wip.spotify import Album
+import spotify
 import argparse
 
 #Using Spotify's Client Credentials Authorization Flow
@@ -57,7 +57,11 @@ def search(query,headers):
     r = requests.get(url=f'{SEARCH_ENDPOINT}{s_query}', headers=headers)
     return r
 
-def rec_albums():
+def rec_albums(limit, artist_id, tracklist):
+    
+    params = f"limit={limit}&seed_artists={artist_id}&seed_tracks={tracklist[0]}" #params to be passed into the Recommendation GET Request, limit to 10 recommendations
+    rec = requests.get(REC_ENDPOINT,headers=headers, params=params)
+
     ...
 
 #################
@@ -73,7 +77,7 @@ def main():
     
     #HEADERS
     headers = {
-        "Authorization" : "Bearer " + get_token(secret).json()['access_token'] #Authorization header to pass in to various end points
+        "Authorization" : "Bearer " + get_token(secret) #Authorization header to pass in to various end points
     }
     
     try:
