@@ -43,4 +43,4 @@ def test_get_artist():
     assert get_artist(ARTIST_ID,HEADERS).json()['name'] == "Neil Young"
 
 def test_rec():
-    assert 
+    ...

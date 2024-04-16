@@ -4,7 +4,7 @@ import urllib.parse
 import os
 from get_token.get_token import get_token
 from ascii_logo import main as ascii_img
-import spotify
+from spotify import Album
 import argparse
 
 #Using Spotify's Client Credentials Authorization Flow
@@ -58,14 +58,10 @@ def search(query,headers):
     return r
 
 def rec_albums(limit, artist_id, tracklist):
-    
-    params = f"limit={limit}&seed_artists={artist_id}&seed_tracks={tracklist[0]}" #params to be passed into the Recommendation GET Request, limit to 10 recommendations
-    rec = requests.get(REC_ENDPOINT,headers=headers, params=params)
-
     ...
 
 #################
-##  MAIN LOGIC ##
+##  APP LOGIC ##
 #################
 
 def main():
@@ -81,14 +77,15 @@ def main():
     }
     
     try:
-        s = search(input("Enter an album name: "),headers=headers) #Accept an album title, can also accept artist and album title or whatever Spotify's Search API can accept
+        s = Album.search_album(input("Enter an album name: "),headers) #Accept an album title, can also accept artist and album title or whatever Spotify's Search API can accept
 
         os.system("clear")
         ascii_img()
 
-        searched_albums = s.json()['albums']['items'] #list of albums as list of dicts
-        searched_album_ids = [a['id'] for a in s.json()['albums']['items']] #list of album ids as list of strings
+        #searched_albums = s.json()['albums']['items'] #list of albums as list of dicts
+        #searched_album_ids = [a['id'] for a in s.json()['albums']['items']] #list of album ids as list of strings
 
+        """
         index = 1
         for a in searched_albums: #loop through dicts of albums, search() limits to 10 searches currently, print Artist(s) - Album
             print(f"{index}. ", end="")
@@ -99,16 +96,26 @@ def main():
                     print(f"{a['artists'][b]['name']}",end="")
             print(f" - {a['name']}")
             index += 1
+        """
+        index = 1
+        for a in s:
+            print(f"{index}. {a.artists} - {a.name}")
+            index += 1
+
+        """
         try:
-            r = get_album(searched_album_ids[int(input("\nPlease choose an album from 1 to 10: ")) - 1],headers)
+            r = spotify.Album.get_album(s[int(input("\nPlease choose an album from 1 to 10: ")) - 1].album_id,headers)
+            
+            
             #TODO possibly create a get_tracklist function?
             tracklist = [r.json()['tracks']['items'][_]['id'] for _ in range(0,r.json()['tracks']['total'])] #list of tracks IDs from album
             #TODO possibly create a get artist_id function?
             artist_id = r.json()['artists'][0]['id']
             
+
             limit = 5
             #seed_tracks are limited to two, should be least popular and most popular, need function to set the two and add in params
-            params = f"limit={limit}&seed_artists={artist_id}&seed_tracks={tracklist[0]}" #params to be passed into the Recommendation GET Request, limit to 10 recommendations
+            params = f"limit={limit}&seed_artists={r.artist_ids}&seed_tracks={r.tracklist[0]}" #params to be passed into the Recommendation GET Request, limit to 10 recommendations
 
             #TODO mechanism for how/what we want to seed to the recommendation engine to provide us 10 album recs
             #artist, least popular track on album, most popular track on album, and audio features, e.g., 'min_valence, max_valence', and so on?
@@ -125,9 +132,12 @@ def main():
                 print(rec.json()['tracks'][i]['album']['external_urls']['spotify'])
         except KeyError:
             pass
+        """
     except ValueError:
         pass
 
+        
+    """
     #l = [a['artists'][b]['name'] for a in searched_albums for b in range(0,len(a['artists']))]
     #d = [a['name'] for a in searched_albums for b in range(0,len(a['artists']))]
 
@@ -139,7 +149,8 @@ def main():
     #GET track audio features
     #TODO use get_audio_features() function here, but we would need to return some kind of dict that has two values, one for the least and one for the most popular track to then be inputted into the recommendatin engine
     audio = requests.get(AUDIO_FEATS_ENDPOINT+tracklist[0],headers=headers)
-
+    """
+        
 if __name__ == "__main__":
     os.system("clear")
     ascii_img()
