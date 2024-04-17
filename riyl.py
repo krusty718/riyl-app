@@ -87,13 +87,13 @@ def main():
             print(f"{index}. {a.artists} - {a.name}")
             index += 1
 
-        """
+        
         try:
-            r = spotify.Album.get_album(s[int(input("\nPlease choose an album from 1 to 10: ")) - 1].album_id,headers)
+            r = Album.get_album(s[int(input("\nPlease choose an album from 1 to 10: ")) - 1].album_id,headers)
 
             limit = 5
             #seed_tracks are limited to two, should be least popular and most popular, need function to set the two and add in params
-            params = f"limit={limit}&seed_artists={r.artist_ids}&seed_tracks={r.tracklist[0]}" #params to be passed into the Recommendation GET Request, limit to 10 recommendations
+            params = f"limit={limit}&seed_artists={[id for id in r.artist_ids]}&seed_tracks={r.tracklist[0]}" #params to be passed into the Recommendation GET Request, limit to 10 recommendations
 
             #TODO mechanism for how/what we want to seed to the recommendation engine to provide us 10 album recs
             #artist, least popular track on album, most popular track on album, and audio features, e.g., 'min_valence, max_valence', and so on?
@@ -101,8 +101,11 @@ def main():
             os.system("clear")
             ascii_img()
 
+            print(r)
+            
             rec = requests.get(REC_ENDPOINT,headers=headers, params=params)
-            print(f"\nRecommending based on {r.json()['artists'][0]['name']} - {r.json()['name']}\n\n")
+            print(rec.status_code)
+            print(f"\nRecommending based on {r.artists} - {r.name}\n\n")
             for i in range(0,limit):
                 for _ in range(0,len(rec.json()['tracks'][i]['artists'])):
                     print(rec.json()['tracks'][i]['artists'][_]['name'], end=" - ") #prints artist(s)
@@ -110,7 +113,6 @@ def main():
                 print(rec.json()['tracks'][i]['album']['external_urls']['spotify'])
         except KeyError:
             pass
-        """
     except ValueError:
         pass
 

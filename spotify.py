@@ -15,7 +15,7 @@ class Album:
         self.album_id = album_id
 
     def __repr__(self):
-        return f'Artist(s): {self.artists} \nAlbum: {self.name} \nArtist IDs: {self.artist_ids}  \nTracklist: {self.tracklist} \nArtist IDs: {self.artist_ids} \nAlbum ID: {self.album_id}'
+        return f'Artist(s): {self.artists} \nAlbum: {self.name} \nArtist IDs: {self.artist_ids}  \nTracklist: {self.tracklist} \nAlbum ID: {self.album_id}'
     
     @property
     def name(self):
