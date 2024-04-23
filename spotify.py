@@ -90,27 +90,3 @@ class Album:
         rec = requests.get(REC_ENDPOINT,headers=headers, params=params)
         
         return rec
-"""
-def main():
-    boys = '2CNEkSE8TADXRT2AzcEt1b'
-    neil = '70Yl2w1p00whfnC7fj94ox'
-
-    parse = argparse.ArgumentParser()
-    parse.add_argument("-c", help="-c [CLIENT_SECRET]")
-    arg = parse.parse_args()
-    secret = arg.c
-    
-    #HEADERS
-    headers = {
-        "Authorization" : "Bearer " + get_token.get_token(secret) #Authorization header to pass in to various end points
-    }
-
-    album = Album.get_album(neil, headers)
-    search = Album.search_album(album.name,headers)
-    for _ in search:
-        print(_)
-
-
-if __name__ == "__main__":
-    main()
-"""

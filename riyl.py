@@ -72,8 +72,7 @@ def main():
             
             os.system("clear")
             ascii_img()
-            
-            print(r.album_id)
+
             limit = 5
             rec = Album.rec_albums(r, limit=limit,headers=headers)
 
