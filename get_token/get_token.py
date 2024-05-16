@@ -31,7 +31,7 @@ def get_token(CLIENT_SECRET):
     #POST to the TOKEN_URL
     #Using application/x-www-form-urlencoded parameters
     response = requests.post(TOKEN_URL, headers=headers, data=data)
-    return response
+    return response.json()['access_token']
 
 if __name__ == "__main__":
     get_token()
